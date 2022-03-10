@@ -1,4 +1,7 @@
 {
     "appService.defaultWebAppToDeploy": "/subscriptions/7965e0e7-91d4-4e56-b3b8-f9c7f9bdddfe/resourceGroups/TheAll_Text/providers/Microsoft.Web/sites/TheAllText",
-    "appService.deploySubpath": "."
+    "appService.deploySubpath": ".",
+    "cSpell.words": [
+        "tmppath"
+    ]
 }
