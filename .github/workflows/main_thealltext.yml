@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'TheAllText'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F36A4E2D8B754C3482FB9A692A8B8517 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_965BF75040E94074967D1C243034D272 }}
           package: .
