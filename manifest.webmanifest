@@ -1,21 +1,21 @@
 {
-    "name": "TheAll_Text",
-    "short_name": "TheAll_Text",
-    "icons": [
-      {
-        "src": "images/android-chrome-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "images/android-chrome-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
-    "theme_color": "#09f",
-    "background_color": "#ddd",
-    "display": "standalone",
-    "start_url": ".",
-    "description": "Simple tool to help you"
-  }
+  "name": "TheAll_Text: Text to Handwriting",
+  "short_name": "TheAll_Text",
+  "description": "Turn typed text into realistic handwritten pages.",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#f6f7fb",
+  "icons": [
+    {
+      "src": "images/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
