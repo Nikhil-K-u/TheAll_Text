@@ -1,5 +1,5 @@
-tests/
 node_modules/
-images/
-.github/
-js/vendors/
+js/vendor/
+package-lock.json
+test-results/
+playwright-report/
