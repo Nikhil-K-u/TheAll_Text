@@ -1,31 +1,67 @@
-# TheAll_Text
-It is a tool which help to change your text  or speech into Handwriting.
-I have used Visual studio and azure webapp to build this project.
-![](Screenshot_20220330-204312.jpg)
-![](Screenshot_20220330-204315.jpg)
-![](Screenshot_20220330-204324.jpg)
-Here is how the text image is generated.
-![](download%20(1).jpeg)
-Thank you.
-Future ready talent
+# TheAll_Text ✍️
 
-## Running locally
-The app is plain HTML/CSS/JS (ES modules), so it must be served over HTTP (opening `index.html` directly from disk will not load the modules).
+**Type it. Handwrite it.** TheAll_Text turns typed text into realistic
+handwritten pages that you can download as images or a single PDF.
+
+**Live site:** https://nikhil-k-u.github.io/TheAll_Text/
+
+Everything runs in your browser. Your text is never uploaded anywhere.
+
+![Screenshot](docs/screenshot-1.jpg)
+
+## Features
+
+- **Handwriting fonts:** Homemade Apple, Caveat, Liu Jian Mao Cao and
+  Kruti Dev (Hindi), or upload your own `.ttf` / `.otf` font
+- **Ink colours:** blue, black, red and green presets, or pick any colour
+- **Text controls:** font size, vertical position, word and letter spacing
+- **Paper:** margin lines, ruled lines, a custom paper background image,
+  and shadow or scanner effects
+- **Multi-page:** long text is split across as many pages as needed
+- **Diagrams:** draw with mouse, touch or pen and drop the drawing onto the page
+- **Export:** save single pages as JPG or download every page as one PDF
+- Light and dark theme, remembered between visits
+
+## Project structure
+
+```
+index.html            Page markup
+css/styles.css        All styles (design tokens, layout, paper)
+js/main.js            Entry point: wires everything together
+js/preview.js         Style controls → live page preview
+js/generator.js       Splits text into pages and captures them as images
+js/gallery.js         Generated pages list (reorder, remove, save)
+js/pdf.js             PDF export
+js/drawpad.js         Diagram drawing pad
+js/theme.js           Light / dark theme
+js/utils.js           Shared helpers
+js/vendor/            html2canvas and jsPDF (bundled, no CDN needed)
+tests/                Playwright end-to-end tests
+```
+
+## Development
+
+Requires [Node.js](https://nodejs.org/) 18 or newer.
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:5000
+npm run lint
+npm run format
+npm test           # runs the Playwright tests
 ```
 
-Then open http://localhost:5000.
+The site is plain HTML, CSS and JavaScript modules with no build step.
+It deploys to GitHub Pages automatically on every push to `main`.
 
+## Credits
 
+Built by [Nikhil Kumar](https://github.com/Nikhil-K-u).
+Originally based on
+[text-to-handwriting](https://github.com/saurabhdaware/text-to-handwriting)
+by Saurabh Daware (MIT). Uses [html2canvas](https://html2canvas.hertzen.com/)
+and [jsPDF](https://github.com/parallax/jsPDF).
 
-## Features
-- Type or paste text onto the page preview and click **Generate Image**
-- Long text is automatically split across multiple pages
-- Choose handwriting font (or upload your own), ink colour, font size, spacing, margins, lines, effects and resolution
-- Upload a paper image as the background
-- Draw diagrams and add them to the page
-- Download each page as an image or all pages as a single PDF
-- Light/dark theme (remembered between visits)
+## License
+
+[MIT](LICENSE)
