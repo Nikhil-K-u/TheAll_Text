@@ -1,117 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125454191-4"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-125454191-4');
-    </script>
+  <head>
+    <!-- Basic -->
+    <meta charset="UTF-8" />
     <!-- Mobile Specific Meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Basic -->
-    <meta charset="UTF-8" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-125454191-4"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-125454191-4');
+    </script>
+
     <meta name="theme-color" content="#09f" />
-    <meta name="description" content="A .  TheAll__Text" />
-    <meta name="keywords" content=" TheAll__Text, TheAll__Text,    TheAll__Text, convert text to image, write assignment online" />
+    <meta
+      name="description"
+      content="TheAll_Text - convert your typed text into an image that looks like handwriting."
+    />
+    <meta
+      name="keywords"
+      content="TheAll_Text, text to handwriting, convert text to image, write assignment online"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="author" content="The King" />
     <meta name="copyright" content="The King" />
     <meta name="robots" content="follow" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="TheAll_Text" />
-    <meta property="og:url" content="https://github.com/Nikhil-K-u/TheAll_Text" />
-    <meta property="og:description" content="A simple tool for all your writing work .TheAll__Text" />
-    <meta property="og:image:secure_url" itemprop="image" content="https://res.cloudinary.com/saurabhdaware/image/upload/v1585413874/saurabh2019/projects/text-to-handwriting.png" />
-    <meta property="og:image" itemprop="image" content="https://res.cloudinary.com/saurabhdaware/image/upload/v1585413874/saurabh2019/projects/text-to-handwriting.png" />
-    <meta property="og:image:width" content="600" />
-    <meta property="og:image:height" content="337" />
-    <title> TheAll__Text</title>
+    <meta
+      property="og:url"
+      content="https://github.com/Nikhil-K-u/TheAll_Text"
+    />
+    <meta
+      property="og:description"
+      content="A simple tool for all your writing work - TheAll_Text"
+    />
+    <meta
+      property="og:image"
+      itemprop="image"
+      content="https://raw.githubusercontent.com/Nikhil-K-u/TheAll_Text/main/Screenshot_20220330-204312.jpg"
+    />
+    <title>TheAll_Text</title>
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="images/favicon-16x16.png"
+    />
 
     <!-- PWA Migration -->
     <link rel="manifest" href="./manifest.webmanifest" />
 
     <!-- Load Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Homemade+Apple|Roboto|Caveat|Liu+Jian+Mao+Cao&display=swap" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Homemade+Apple|Roboto|Caveat|Liu+Jian+Mao+Cao&display=swap"
+    />
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/features.css" />
-</head>
+  </head>
 
-<body>
+  <body>
+    <script>
+      // Apply the saved theme before the page paints to avoid a flash.
+      try {
+        if (window.localStorage.getItem('prefers-theme') === 'dark') {
+          document.body.classList.add('dark');
+        }
+      } catch (e) {
+        // localStorage may be unavailable (private mode etc.)
+      }
+    </script>
     <main>
-        <button aria-label="Activate Dark Mode" title="Toggle Dark Mode" aria-pressed="false" onclick="toggleTheme(this)" class="dark-mode-toggle">
+      <button
+        aria-label="Activate Dark Mode"
+        title="Toggle Dark Mode"
+        aria-pressed="false"
+        type="button"
+        onclick="toggleTheme(this)"
+        class="dark-mode-toggle"
+      >
         <span class="sun">
           <img
             alt="sun icon that represents light mode"
-            width="37px"
+            width="37"
             src="images/sun.svg"
         /></span>
         <span class="moon"
           ><img
-            alt="moon icon to represent dark mode "
-            width="27px"
+            alt="moon icon to represent dark mode"
+            width="27"
             src="images/moon.svg"
         /></span>
       </button>
-        <h1> TheAll__Text</h1>
-        <section class="generate-image-section">
-            <br /><br />
-            <form id="generate-image-form">
-                <!-- Generate Image Section -->
-                <div class="display-flex output-grid responsive-flex">
-                    <div class="flex-1 page-container-super">
-                        <div>
-                            <h2 style="margin-top: 0px;">Input</h2>
+      <h1>TheAll_Text</h1>
+      <section class="generate-image-section">
+        <br /><br />
+        <form id="generate-image-form">
+          <!-- Generate Image Section -->
+          <div class="display-flex output-grid responsive-flex">
+            <div class="flex-1 page-container-super">
+              <div>
+                <h2 style="margin-top: 0px">Input</h2>
+                <label class="block" for="note">Type/Paste text here</label>
+              </div>
 
-            </form> <label class="block" for="note">Type/Paste text here</label>
-            </div>
-
-            <div class="flex-1 page-container">
+              <div class="flex-1 page-container">
                 <div class="page-a margined lines">
-                    <div contenteditable="true" class="top-margin"></div>
-                    <div class="display-flex left-margin-and-content">
-                        <div contenteditable="true" class="left-margin"></div>
-                        <div class="paper-content" id="note" contenteditable="true">
-                            Just type here and get your required item.
-                        </div>
+                  <div contenteditable="true" class="top-margin"></div>
+                  <div class="display-flex left-margin-and-content">
+                    <div contenteditable="true" class="left-margin"></div>
+                    <div class="paper-content" id="note" contenteditable="true">
+                      Just type here and get your required item.
                     </div>
-                    <div class="overlay"></div>
+                  </div>
+                  <div class="overlay"></div>
                 </div>
                 <br />
-            </div>
+              </div>
 
-            <div>
-                <button id="draw-diagram-button" type="button" style="font-size: 0.9rem; margin-top: 5px;" class="draw-button">
+              <div>
+                <button
+                  id="draw-diagram-button"
+                  type="button"
+                  style="font-size: 0.9rem; margin-top: 5px"
+                  class="draw-button"
+                >
                   Draw <small>(Beta)</small>
                 </button>
-            </div>
+              </div>
             </div>
 
             <div class="customization-col">
-                <!-- Handwriting Font -->
-                <div style="padding: 5px 0px 5px 0px;">
-                    <b>Customizations</b> <small>(Optional)</small>
-                    <p style="font-size: 0.8rem;">
-                        <em>Note: Few changes may reflect only in the generated image
+              <div style="padding: 5px 0px 5px 0px">
+                <b>Customizations</b> <small>(Optional)</small>
+                <p style="font-size: 0.8rem">
+                  <em
+                    >Note: Few changes may reflect only in the generated image
                     and not in the preview</em
                   >
                 </p>
               </div>
+
+              <!-- Handwriting Font -->
               <fieldset>
                 <legend>Handwriting Options</legend>
 
@@ -123,43 +179,50 @@
                     <select id="handwriting-font">
                       <option
                         selected
-                        style="font-family: 'Homemade Apple';"
+                        style="font-family: 'Homemade Apple'"
                         value="'Homemade Apple', cursive"
                       >
                         Homemade Apple
                       </option>
-                      <option value="Hindi_Font">Kruti-dev(Hindi)</option>
+                      <option value="'Hindi_Font'">Kruti-dev(Hindi)</option>
                       <option
-                        style="font-family: 'Caveat', cursive; font-size: 13pt;"
+                        style="font-family: 'Caveat', cursive; font-size: 13pt"
                         value="'Caveat', cursive"
                       >
                         Caveat
                       </option>
                       <option
-                        style="
-                          font-family: 'Liu Jian Mao Cao';
-                          font-size: 13pt;
-                        "
+                        style="font-family: 'Liu Jian Mao Cao'; font-size: 13pt"
                         value="'Liu Jian Mao Cao', cursive"
                       >
                         Liu Jian Mao Cao
                       </option>
                     </select>
                   </div>
-                
+                  <div class="upload-handwriting-container">
+                    <label class="block" for="font-file"
+                      >Upload your own font</label
+                    >
+                    <input
+                      accept=".ttf, .otf, .woff, .woff2"
+                      type="file"
+                      id="font-file"
+                    />
+                  </div>
                 </div>
               </fieldset>
 
-              <!-- Pen ink color, Font size, Vertical position text, Word Spacing -->
+              <!-- Pen ink color, Font size, Page size, Effects, Resolution -->
               <fieldset>
-                <legend>Page & Text Options</legend>
+                <legend>Page &amp; Text Options</legend>
 
                 <div class="category-grid">
                   <div class="postfix-input" data-postfix="pt">
                     <label for="font-size">Font Size</label>
                     <input
                       id="font-size"
-                      min="0"
+                      min="1"
+                      max="30"
                       step="0.5"
                       value="10"
                       type="number"
@@ -168,7 +231,7 @@
                   <div>
                     <label class="block" for="ink-color">Ink Color</label>
                     <select id="ink-color">
-                      <option default value="#000f55">Blue</option>
+                      <option selected value="#000f55">Blue</option>
                       <option value="black">Black</option>
                       <option value="#ba3807">Red</option>
                     </select>
@@ -176,13 +239,13 @@
                   <div>
                     <label class="block" for="page-size">Page Size</label>
                     <select id="page-size">
-                      <option default value="a4">A4 &nbsp;</option>
+                      <option selected value="a4">A4</option>
                     </select>
                   </div>
                   <div>
                     <label class="block" for="page-effects">Effects</label>
                     <select id="page-effects">
-                      <option default value="shadows">Shadows</option>
+                      <option selected value="shadows">Shadows</option>
                       <option value="scanner">Scanner</option>
                       <option value="no-effect">No Effect</option>
                     </select>
@@ -218,7 +281,7 @@
                       type="number"
                     />
                   </div>
-                  <div class="postfix-input" data-postfix="pt">
+                  <div class="postfix-input" data-postfix="px">
                     <label for="letter-spacing">Letter Spacing</label>
                     <input
                       id="letter-spacing"
@@ -231,9 +294,9 @@
                 </div>
               </fieldset>
 
-              <!-- Letter spacing, Paper Margin, Paper Lines, Paper Curvature -->
+              <!-- Paper Margin, Paper Lines, Paper background -->
               <fieldset>
-                <legend>Margin & Line Options</legend>
+                <legend>Margin &amp; Line Options</legend>
 
                 <div class="category-grid">
                   <div>
@@ -273,18 +336,15 @@
                       <div></div>
                     </label>
                   </div>
-                  <div class="experimental">
-                    <!-- Removed option -->
-                    <div class="upload-paper-container">
-                      <label class="block" for="paper-file"
-                        >Upload Paper Image as Background</label
-                      >
-                      <input
-                        accept=".jpg, .jpeg, .png"
-                        type="file"
-                        id="paper-file"
-                      />
-                    </div>
+                  <div class="upload-paper-container">
+                    <label class="block" for="paper-file"
+                      >Upload Paper Image as Background</label
+                    >
+                    <input
+                      accept=".jpg, .jpeg, .png"
+                      type="file"
+                      id="paper-file"
+                    />
                   </div>
                 </div>
               </fieldset>
@@ -296,7 +356,7 @@
                   width: 80%;
                 "
               />
-              <div style="text-align: center; padding: 30px 0px;">
+              <div style="text-align: center; padding: 30px 0px">
                 <button
                   type="submit"
                   data-testid="generate-image-button"
@@ -313,61 +373,70 @@
       <!-- OUTPUT -->
       <section>
         <h2 id="output-header">Output</h2>
-        <div id="output" class="output" style="text-align: center;">
+        <div id="output" class="output" style="text-align: center">
           Click "Generate Image" Button to generate new image.
         </div>
-        <div style="text-align: center; padding: 30px;">
-          <button class="imp-button" id="download-as-pdf-button">
+        <div style="text-align: center; padding: 30px">
+          <button type="button" class="imp-button" id="download-as-pdf-button">
             Download All Images as PDF
           </button>
-          <button class="delete-button" id="delete-all-button">
+          <button type="button" class="delete-button" id="delete-all-button">
             Clear all images
           </button>
         </div>
       </section>
-          </main>
-          <section class="draw-container popup-container">
-            <button class="close-button">&times;</button>
-            <div class="display-flex responsive-flex">
-              <canvas
-                id="diagram-canvas"
-                style="background-color: #fff;"
-                height="300px"
-                width="600px"
-              ></canvas>
-              <div class="flex-1 buttons-container padding-around">
-                <button
-                  id="add-to-paper-button"
-                  style="margin-top: 5px; margin-bottom: 5px;"
-                >
-                  Add to Paper
-                </button>
-                <button
-                  id="draw-download-button"
-                  style="margin-top: 5px; margin-bottom: 5px;"
-                >
-                  Download Image
-                </button>
-                <br /><br />
-                <input
-                  type="file"
-                  id="image-to-add-in-canvas"
-                  accept="image/x-png,image/jpeg"
-                  hidden="hidden"
-                />
-                <br /><br /><button id="add-new-image-button">Add bg image</button>
-                <br /><br />
-                <button
-                  id="clear-draw-canvas"
-                  class="blue-button"
-                  style="background-color: #f30; color: #fff;"
-                >
-                  Clear Canvas
-                </button>
-              </div>
-            </div>
-          </section> 
-          <a
+    </main>
+
+    <!-- DRAW POPUP -->
+    <section class="draw-container popup-container">
+      <button type="button" class="close-button" aria-label="Close">
+        &times;
+      </button>
+      <div class="display-flex responsive-flex">
+        <canvas
+          id="diagram-canvas"
+          style="background-color: #fff"
+          height="300"
+          width="600"
+        ></canvas>
+        <div class="flex-1 buttons-container padding-around">
+          <button
+            type="button"
+            id="add-to-paper-button"
+            style="margin-top: 5px; margin-bottom: 5px"
+          >
+            Add to Paper
+          </button>
+          <button
+            type="button"
+            id="draw-download-button"
+            style="margin-top: 5px; margin-bottom: 5px"
+          >
+            Download Image
+          </button>
+          <br /><br />
+          <input
+            type="file"
+            id="image-to-add-in-canvas"
+            accept="image/png,image/jpeg"
+            hidden
+          />
+          <br /><br />
+          <button type="button" id="add-new-image-button">Add bg image</button>
+          <br /><br />
+          <button
+            type="button"
+            id="clear-draw-canvas"
+            class="blue-button"
+            style="background-color: #f30; color: #fff"
+          >
+            Clear Canvas
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <a
       tabindex="0"
       href="https://github.com/Nikhil-K-u/TheAll_Text"
       rel="noopener noreferrer"
@@ -393,7 +462,7 @@
         <path
           d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
           fill="currentColor"
-          style="transform-origin: 130px 106px;"
+          style="transform-origin: 130px 106px"
           class="octo-arm"
         ></path>
         <path
@@ -404,38 +473,41 @@
       </svg>
     </a>
 
-     
-    <script
-      src="./js/vendors/html2canvas.min.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="./js/vendors/html2canvas.min.js"></script>
+    <script src="./js/vendors/jspdf.min.js"></script>
     <script type="module" src="js/app.mjs"></script>
-    <script defer src="https://unpkg.com/jspdf@^1/dist/jspdf.min.js"></script>
     <script>
       function toggleTheme(toggleButton) {
-        if (document.body.classList.contains('dark')) {
-          document.body.classList.add('fade-in-light');
-          document.body.classList.remove('dark');
-          document.body.classList.remove('fade-in-dark');
-          window.localStorage.setItem('prefers-theme', 'light');
-          if (toggleButton) {
-            toggleButton.setAttribute('aria-pressed', false);
-            toggleButton.setAttribute('aria-label', 'Activate Dark Mode');
-          }
-        } else {
-          document.body.classList.add('fade-in-dark');
-          document.body.classList.add('dark');
-          document.body.classList.remove('fade-in-light');
-          window.localStorage.setItem('prefers-theme', 'dark');
-          if (toggleButton) {
-            toggleButton.setAttribute('aria-pressed', true);
-            toggleButton.setAttribute('aria-label', 'Activate Light Mode');
-          }
+        const isDark = document.body.classList.toggle('dark');
+        document.body.classList.toggle('fade-in-dark', isDark);
+        document.body.classList.toggle('fade-in-light', !isDark);
+        try {
+          window.localStorage.setItem(
+            'prefers-theme',
+            isDark ? 'dark' : 'light'
+          );
+        } catch (e) {
+          // ignore storage errors
+        }
+        if (toggleButton) {
+          toggleButton.setAttribute('aria-pressed', String(isDark));
+          toggleButton.setAttribute(
+            'aria-label',
+            isDark ? 'Activate Light Mode' : 'Activate Dark Mode'
+          );
         }
       }
 
-      const localPreference = window.localStorage.getItem('prefers-theme');
-   
+      // Sync the toggle button with the theme applied on load.
+      (function () {
+        const isDark = document.body.classList.contains('dark');
+        const toggleButton = document.querySelector('.dark-mode-toggle');
+        toggleButton.setAttribute('aria-pressed', String(isDark));
+        toggleButton.setAttribute(
+          'aria-label',
+          isDark ? 'Activate Light Mode' : 'Activate Dark Mode'
+        );
+      })();
     </script>
   </body>
 </html>

@@ -3,83 +3,90 @@ const paperContentEl = document.querySelector('.page-a .paper-content');
 const overlayEl = document.querySelector('.overlay');
 
 let paperContentPadding;
+let paperPaddingAdjusted = false;
 
 function isFontError() {
-    // SOme fonts have padding top errors, this functions tells you if the current font has that;
-    const currentHandwritingFont = document.body.style.getPropertyValue(
-        '--handwriting-font'
-    );
-    return (
-        currentHandwritingFont === '' ||
-        currentHandwritingFont.includes('Homemade Apple')
-    );
+  // SOme fonts have padding top errors, this functions tells you if the current font has that;
+  const currentHandwritingFont =
+    document.body.style.getPropertyValue('--handwriting-font');
+  return (
+    currentHandwritingFont === '' ||
+    currentHandwritingFont.includes('Homemade Apple')
+  );
 }
 
 function applyPaperStyles() {
-    pageEl.style.border = 'none';
-    pageEl.style.overflowY = 'hidden';
+  pageEl.style.border = 'none';
+  pageEl.style.overflowY = 'hidden';
 
-    // Adding class shadows even if effect is scanner
-    if (document.querySelector('#page-effects').value === 'scanner') {
-        overlayEl.classList.add('shadows');
-    } else {
-        overlayEl.classList.add(document.querySelector('#page-effects').value);
-    }
+  // Adding class shadows even if effect is scanner
+  if (document.querySelector('#page-effects').value === 'scanner') {
+    overlayEl.classList.add('shadows');
+  } else {
+    overlayEl.classList.add(document.querySelector('#page-effects').value);
+  }
 
-    if (document.querySelector('#page-effects').value === 'scanner') {
-        // For scanner, we need shadow between 50deg to 120deg only
-        // Since If the lit part happens to be on margins, the margins get invisible
-        overlayEl.style.background = `linear-gradient(${
+  if (document.querySelector('#page-effects').value === 'scanner') {
+    // For scanner, we need shadow between 50deg to 120deg only
+    // Since If the lit part happens to be on margins, the margins get invisible
+    overlayEl.style.background = `linear-gradient(${
       Math.floor(Math.random() * (120 - 50 + 1)) + 50
     }deg, #0008, #0000)`;
-    } else if (document.querySelector('#page-effects').value === 'shadows') {
-        overlayEl.style.background = `linear-gradient(${
+  } else if (document.querySelector('#page-effects').value === 'shadows') {
+    overlayEl.style.background = `linear-gradient(${
       Math.random() * 360
     }deg, #0008, #0000)`;
-    }
+  }
 
-    if (isFontError() && document.querySelector('#font-file').files.length < 1) {
-        paperContentPadding =
-            paperContentEl.style.paddingTop.replace(/px/g, '') || 5;
-        const newPadding = Number(paperContentPadding) - 5;
-        paperContentEl.style.paddingTop = `${newPadding}px`;
-    }
+  const fontFileEl = document.querySelector('#font-file');
+  const hasCustomFont = fontFileEl && fontFileEl.files.length > 0;
+  paperPaddingAdjusted = isFontError() && !hasCustomFont;
+  if (paperPaddingAdjusted) {
+    paperContentPadding =
+      paperContentEl.style.paddingTop.replace(/px/g, '') || 5;
+    const newPadding = Number(paperContentPadding) - 5;
+    paperContentEl.style.paddingTop = `${newPadding}px`;
+  }
 }
 
 function removePaperStyles() {
-    pageEl.style.overflowY = 'auto';
-    pageEl.style.border = '1px solid var(--elevation-background)';
+  pageEl.style.overflowY = 'auto';
+  pageEl.style.border = '1px solid var(--elevation-background)';
 
-    if (document.querySelector('#page-effects').value === 'scanner') {
-        overlayEl.classList.remove('shadows');
-    } else {
-        overlayEl.classList.remove(document.querySelector('#page-effects').value);
-    }
+  if (document.querySelector('#page-effects').value === 'scanner') {
+    overlayEl.classList.remove('shadows');
+  } else {
+    overlayEl.classList.remove(document.querySelector('#page-effects').value);
+  }
 
-    if (isFontError()) {
-        paperContentEl.style.paddingTop = `${paperContentPadding}px`;
-    }
+  if (paperPaddingAdjusted) {
+    paperContentEl.style.paddingTop = `${paperContentPadding}px`;
+    paperPaddingAdjusted = false;
+  }
 }
 
 function renderOutput(outputImages) {
-    if (outputImages.length <= 0) {
-        document.querySelector('#output').innerHTML =
-            'Click "Generate Image" Button to generate new image.';
-        document.querySelector('#download-as-pdf-button').classList.remove('show');
-        document.querySelector('#delete-all-button').classList.remove('show');
-        return;
-    }
+  if (outputImages.length <= 0) {
+    document.querySelector('#output').innerHTML =
+      'Click "Generate Image" Button to generate new image.';
+    document.querySelector('#download-as-pdf-button').classList.remove('show');
+    document.querySelector('#delete-all-button').classList.remove('show');
+    return;
+  }
 
-    document.querySelector('#download-as-pdf-button').classList.add('show');
-    document.querySelector('#delete-all-button').classList.add('show');
-    document.querySelector('#output').innerHTML = outputImages
-        .map(
-            (outputImageCanvas, index) => /* html */ `
+  document.querySelector('#download-as-pdf-button').classList.add('show');
+  document.querySelector('#delete-all-button').classList.add('show');
+  document.querySelector('#output').innerHTML = outputImages
+    .map((outputImageCanvas, index) => {
+      const imageURL = outputImageCanvas.toDataURL('image/jpeg');
+      return /* html */ `
     <div 
       class="output-image-container" 
       style="position: relative;display: inline-block;"
     >
       <button 
+        type="button"
+        aria-label="Remove image ${index + 1}"
         data-index="${index}" 
         class="close-button close-${index}">
           &times;
@@ -87,24 +94,26 @@ function renderOutput(outputImages) {
       <img 
         class="shadow" 
         alt="Output image ${index}" 
-        src="${outputImageCanvas.toDataURL('image/jpeg')}"
+        src="${imageURL}"
       />
       <div style="text-align: center">
         <a 
           class="button download-image-button" 
-          download 
-          href="${outputImageCanvas.toDataURL('image/jpeg')}
-        ">Download Image</a>
+          download="TheAll_Text-${index + 1}.jpg"
+          href="${imageURL}"
+        >Download Image</a>
         <br/>
         <br/>
 
         <button 
+          type="button"
           class="button move-left"
           data-index="${index}" 
         >
           Move Left
         </button>
         <button 
+          type="button"
           class="button move-right"
           data-index="${index}" 
         >
@@ -112,9 +121,9 @@ function renderOutput(outputImages) {
         </button>
       </div>
     </div>
-    `
-        )
-        .join('');
+    `;
+    })
+    .join('');
 }
 
 export { removePaperStyles, applyPaperStyles, renderOutput };

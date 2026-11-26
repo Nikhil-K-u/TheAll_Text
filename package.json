@@ -1,11 +1,8 @@
 {
-  "name": "text-to-handwriting",
+  "name": "theall-text",
   "version": "1.0.0-rc.1",
-  "description": "Hey everyone! text-to-handwriting is a tool that lets you generate image that looks like handwriting from text.",
-  "main": "js/app.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "description": "TheAll_Text is a tool that lets you generate an image that looks like handwriting from text.",
+  "main": "index.html",
   "scripts": {
     "test": "cypress run",
     "eslint": "eslint --fix \"js/**/**.mjs\"",

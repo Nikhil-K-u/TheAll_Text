@@ -6,48 +6,47 @@ import { isMobile } from './helpers.mjs';
 
 let inkColor = '#000f55';
 const pointSize = isMobile ? 0.5 : 1;
-let lastX;
-let lastY;
+let lastX = null;
+let lastY = null;
 
 const drawCanvas = document.querySelector('canvas#diagram-canvas');
-const ctx = drawCanvas.getContext('2d');
-ctx.fillStyle = 'transparent';
-ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
 // Set smaller canvas on mobiles
 if (isMobile) {
   drawCanvas.height = 150;
   drawCanvas.width = 300;
 }
+const ctx = drawCanvas.getContext('2d');
 
 function setInkColor(color) {
   inkColor = color;
 }
 
-function drawPoint(x, y) {
+function toCanvasPosition(eventX, eventY) {
   const canvasRect = drawCanvas.getBoundingClientRect();
+  // Account for CSS scaling of the canvas element
+  const scaleX = canvasRect.width ? drawCanvas.width / canvasRect.width : 1;
+  const scaleY = canvasRect.height ? drawCanvas.height / canvasRect.height : 1;
+  return [
+    (eventX - canvasRect.left) * scaleX,
+    (eventY - canvasRect.top) * scaleY
+  ];
+}
 
-  function fixPositions(eventX, eventY) {
-    if (isMobile) {
-      return [eventX - canvasRect.left, eventY - canvasRect.top];
-    }
-
-    return [eventX - canvasRect.left, eventY - canvasRect.top];
-  }
-
-  if (lastX && lastY && (x !== lastX || y !== lastY)) {
+function drawPoint(x, y) {
+  if (lastX !== null && lastY !== null && (x !== lastX || y !== lastY)) {
     ctx.lineWidth = 2 * pointSize;
+    ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.strokeStyle = inkColor;
-    ctx.moveTo(...fixPositions(lastX, lastY));
-    ctx.lineTo(...fixPositions(x, y));
+    ctx.moveTo(...toCanvasPosition(lastX, lastY));
+    ctx.lineTo(...toCanvasPosition(x, y));
     ctx.stroke();
   }
 
   ctx.beginPath(); // Start path
   ctx.fillStyle = inkColor;
-
-  ctx.arc(...fixPositions(x, y), pointSize, 0, Math.PI * 2, true); // Draw a point using the arc function of the canvas with a point structure.
-
+  // Draw a point using the arc function of the canvas with a point structure.
+  ctx.arc(...toCanvasPosition(x, y), pointSize, 0, Math.PI * 2, true);
   ctx.fill(); // Close
 
   lastX = x;
@@ -77,6 +76,7 @@ function downloadFile() {
   a.download = 'diagram.png';
   document.body.appendChild(a);
   a.click();
+  a.remove();
 }
 
 function addToPaper() {
@@ -87,43 +87,42 @@ function addToPaper() {
   toggleDrawCanvas();
 }
 
-function addImageToPaper() {
-  const imagePath = document.querySelector('#image-to-add-in-canvas');
-  const tempImage = new Image();
-  imagePath.value = '';
-  imagePath.click();
-  imagePath.addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.addEventListener('load', function () {
-        tempImage.src = this.result;
-        tempImage.onload = function () {
-          if (tempImage.width > tempImage.height) {
-            ctx.drawImage(
-              tempImage,
-              0,
-              0,
-              drawCanvas.width,
-              (drawCanvas.height * tempImage.width) / drawCanvas.width
-            );
-          } else {
-            const newWidth =
-              (drawCanvas.height * tempImage.width) / tempImage.height;
-            ctx.drawImage(
-              tempImage,
-              drawCanvas.width / 2 - newWidth / 2,
-              0,
-              newWidth,
-              drawCanvas.height
-            );
-          }
-        };
-      });
-      reader.readAsDataURL(file);
-    }
-  });
+const imageInput = document.querySelector('#image-to-add-in-canvas');
+
+function drawImageOnCanvas(image) {
+  // Fit image inside canvas while keeping aspect ratio
+  const ratio = Math.min(
+    drawCanvas.width / image.width,
+    drawCanvas.height / image.height
+  );
+  const newWidth = image.width * ratio;
+  const newHeight = image.height * ratio;
+  ctx.drawImage(
+    image,
+    (drawCanvas.width - newWidth) / 2,
+    (drawCanvas.height - newHeight) / 2,
+    newWidth,
+    newHeight
+  );
 }
+
+imageInput.addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.addEventListener('load', function () {
+    const tempImage = new Image();
+    tempImage.onload = () => drawImageOnCanvas(tempImage);
+    tempImage.src = this.result;
+  });
+  reader.readAsDataURL(file);
+});
+
+function addImageToPaper() {
+  imageInput.value = '';
+  imageInput.click();
+}
+
 let isMouseDown = false;
 
 const onMouseDown = (e) => {
@@ -135,8 +134,8 @@ const onMouseDown = (e) => {
 
 const onMouseUp = (e) => {
   isMouseDown = false;
-  lastX = 0;
-  lastY = 0;
+  lastX = null;
+  lastY = null;
 };
 
 const onMouseMove = (e) => {
@@ -157,12 +156,12 @@ const onTouchStart = (e) => {
 
 const onTouchEnd = (e) => {
   isMouseDown = false;
-  lastX = 0;
-  lastY = 0;
+  lastX = null;
+  lastY = null;
 };
 
 const onTouchMove = (e) => {
-  e.preventDefault();
+  if (e.cancelable) e.preventDefault(); // stop page scrolling while drawing
   const touchX = e.touches[0].clientX;
   const touchY = e.touches[0].clientY;
 
@@ -185,10 +184,11 @@ document
 if (isMobile) {
   drawCanvas.addEventListener('touchstart', onTouchStart, { passive: true });
   drawCanvas.addEventListener('touchend', onTouchEnd, { passive: true });
-  drawCanvas.addEventListener('touchmove', onTouchMove, { passive: true });
+  drawCanvas.addEventListener('touchmove', onTouchMove, { passive: false });
 } else {
   drawCanvas.addEventListener('mousedown', onMouseDown, { passive: true });
   drawCanvas.addEventListener('mouseup', onMouseUp, { passive: true });
+  drawCanvas.addEventListener('mouseleave', onMouseUp, { passive: true });
   drawCanvas.addEventListener('mousemove', onMouseMove, { passive: true });
 }
 
