@@ -16,7 +16,7 @@ async function convertDIVToImage() {
   const options = {
     scrollX: 0,
     scrollY: -window.scrollY,
-    scale: document.querySelector('#resolution').value,
+    scale: Number(document.querySelector('#resolution').value) || 2,
     useCORS: true
   };
 
@@ -32,66 +32,87 @@ async function convertDIVToImage() {
   }
 
   outputImages.push(canvas);
-  // Displaying no. of images on addition
-  if (outputImages.length >= 1) {
-    document.querySelector('#output-header').textContent =
-      'Output ' + '( ' + outputImages.length + ' )';
-  }
+  updateOutputHeader();
 }
+
+/**
+ * Shows number of generated images in the output header
+ */
+function updateOutputHeader() {
+  document.querySelector('#output-header').textContent =
+    'Output' + (outputImages.length ? ' ( ' + outputImages.length + ' )' : '');
+}
+
+/**
+ * Returns true when the content overflows the visible page.
+ */
+function isPageOverflowing() {
+  return pageEl.scrollHeight > pageEl.clientHeight + 1;
+}
+
+let isGenerating = false;
 
 /**
  * This is the function that gets called on clicking "Generate Image" button.
  */
 export async function generateImages() {
-  applyPaperStyles();
-  pageEl.scroll(0, 0);
-
+  if (isGenerating) return;
+  isGenerating = true;
   const paperContentEl = document.querySelector('.page-a .paper-content');
-  const scrollHeight = paperContentEl.scrollHeight;
-  const clientHeight = 514; // height of .paper-content when there is no content
+  const initialPaperContent = paperContentEl.innerHTML;
 
-  const totalPages = Math.ceil(scrollHeight / clientHeight);
+  applyPaperStyles();
+  pageEl.scrollTo(0, 0);
 
-  if (totalPages > 1) {
-    // For multiple pages
-    if (paperContentEl.innerHTML.includes('<img')) {
-      alert(
-        "You're trying to generate more than one page, Images and some formatting may not work correctly with multiple images" // eslint-disable-line max-len
-      );
-    }
-    const initialPaperContent = paperContentEl.innerHTML;
-    const splitContent = initialPaperContent.split(/(\s+)/);
-
-    // multiple images
-    let wordCount = 0;
-    for (let i = 0; i < totalPages; i++) {
-      paperContentEl.innerHTML = '';
-      const wordArray = [];
-      let wordString = '';
-
-      while (
-        paperContentEl.scrollHeight <= clientHeight &&
-        wordCount <= splitContent.length
-      ) {
-        wordString = wordArray.join(' ');
-        wordArray.push(splitContent[wordCount]);
-        paperContentEl.innerHTML = wordArray.join(' ');
-        wordCount++;
-      }
-      paperContentEl.innerHTML = wordString;
-      wordCount--;
-      pageEl.scrollTo(0, 0);
+  try {
+    if (!isPageOverflowing()) {
+      // single image
       await convertDIVToImage();
-      paperContentEl.innerHTML = initialPaperContent;
-    }
-  } else {
-    // single image
-    await convertDIVToImage();
-  }
+    } else {
+      // multiple images
+      if (initialPaperContent.includes('<img')) {
+        alert(
+          "You're trying to generate more than one page, Images and some formatting may not work correctly with multiple pages" // eslint-disable-line max-len
+        );
+      }
 
-  removePaperStyles();
-  renderOutput(outputImages);
-  setRemoveImageListeners();
+      // Split into words while keeping whitespace and HTML tags intact
+      const tokens = initialPaperContent
+        .split(/(<[^>]*>|\s+)/)
+        .filter((token) => token !== '');
+
+      let index = 0;
+      while (index < tokens.length) {
+        const pageStart = index;
+        let pageHTML = '';
+        while (index < tokens.length) {
+          const candidate = pageHTML + tokens[index];
+          paperContentEl.innerHTML = candidate;
+          // Always put at least one token on a page to avoid infinite loops
+          if (isPageOverflowing() && index > pageStart) break;
+          pageHTML = candidate;
+          index++;
+        }
+
+        // Skip whitespace at the start of the next page
+        while (index < tokens.length && /^\s+$/.test(tokens[index])) index++;
+
+        if (pageHTML.trim() === '') continue;
+        paperContentEl.innerHTML = pageHTML;
+        pageEl.scrollTo(0, 0);
+        await convertDIVToImage();
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong while generating the image. Please try again.');
+  } finally {
+    paperContentEl.innerHTML = initialPaperContent;
+    removePaperStyles();
+    renderOutput(outputImages);
+    setRemoveImageListeners();
+    isGenerating = false;
+  }
 }
 
 /**
@@ -101,31 +122,24 @@ export async function generateImages() {
 export const deleteAll = () => {
   outputImages.splice(0, outputImages.length);
   renderOutput(outputImages);
-  document.querySelector('#output-header').textContent =
-    'Output' + (outputImages.length ? ' ( ' + outputImages.length + ' )' : '');
+  updateOutputHeader();
 };
 
 const arrayMove = (arr, oldIndex, newIndex) => {
-  if (newIndex >= arr.length) {
-    let k = newIndex - arr.length + 1;
-    while (k--) {
-      arr.push(undefined);
-    }
-  }
   arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
   return arr; // for testing
 };
 
 export const moveLeft = (index) => {
-  if (index === 0) return outputImages;
+  if (index <= 0) return outputImages;
   outputImages = arrayMove(outputImages, index, index - 1);
-  renderOutput(outputImages);
+  return outputImages;
 };
 
 export const moveRight = (index) => {
-  if (index + 1 === outputImages.length) return outputImages;
+  if (index + 1 >= outputImages.length) return outputImages;
   outputImages = arrayMove(outputImages, index, index + 1);
-  renderOutput(outputImages);
+  return outputImages;
 };
 
 /**
@@ -134,43 +148,39 @@ export const moveRight = (index) => {
 export const downloadAsPDF = () => createPDF(outputImages);
 
 /**
- * Sets event listeners for close button on output images.
+ * Re-renders output and re-attaches listeners
+ */
+function refreshOutput() {
+  updateOutputHeader();
+  renderOutput(outputImages);
+  // When output changes, we have to set listeners again
+  setRemoveImageListeners();
+}
+
+/**
+ * Sets event listeners for close / move buttons on output images.
  */
 function setRemoveImageListeners() {
   document
     .querySelectorAll('.output-image-container > .close-button')
     .forEach((closeButton) => {
       closeButton.addEventListener('click', (e) => {
-        outputImages.splice(Number(e.target.dataset.index), 1);
-        // Displaying no. of images on deletion
-        if (outputImages.length >= 0) {
-          document.querySelector('#output-header').textContent =
-            'Output' +
-            (outputImages.length ? ' ( ' + outputImages.length + ' )' : '');
-        }
-        renderOutput(outputImages);
-        // When output changes, we have to set remove listeners again
-        setRemoveImageListeners();
+        outputImages.splice(Number(e.currentTarget.dataset.index), 1);
+        refreshOutput();
       });
     });
 
   document.querySelectorAll('.move-left').forEach((leftButton) => {
     leftButton.addEventListener('click', (e) => {
-      moveLeft(Number(e.target.dataset.index));
-      // Displaying no. of images on deletion
-      renderOutput(outputImages);
-      // When output changes, we have to set remove listeners again
-      setRemoveImageListeners();
+      moveLeft(Number(e.currentTarget.dataset.index));
+      refreshOutput();
     });
   });
 
   document.querySelectorAll('.move-right').forEach((rightButton) => {
     rightButton.addEventListener('click', (e) => {
-      moveRight(Number(e.target.dataset.index));
-      // Displaying no. of images on deletion
-      renderOutput(outputImages);
-      // When output changes, we have to set remove listeners again
-      setRemoveImageListeners();
+      moveRight(Number(e.currentTarget.dataset.index));
+      refreshOutput();
     });
   });
 }
